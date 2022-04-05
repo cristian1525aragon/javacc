@@ -1,0 +1,83 @@
+
+
+/* construya una contraseña que empiece siempre por una letra mayúscula y termine en un numero 
+y con una longitud de 5 y que en las cadenas del centro pueda ir letras mayúsculas o minúsculas
+o números  */
+
+
+/* analizador léxico */
+
+
+/*opciones que ofrece javacc */
+options { 
+  LOOKAHEAD = 1; /* Indica la cantidad de tokens que son tenidos en cuenta por el parser */
+  CHOICE_AMBIGUITY_CHECK = 2;  /*Es el número de tokens que se consideran en las elecciones de chequeo */
+  OTHER_AMBIGUITY_CHECK = 1;  /*Es el número de tokens que se consideran en otra elección de chequeo */
+  STATIC = true; /*los métodos y clases variables se especifican como estáticas en el parser generado */
+  DEBUG_PARSER = false; /* análisis del parsing y los pasos de procesamiento de tokens */
+  DEBUG_LOOKAHEAD = false; /* análisis del parsing y los pasos de procesamiento de tokens */
+  DEBUG_TOKEN_MANAGER = false; /* análisis del parsing y los pasos de procesamiento de tokens */
+  ERROR_REPORTING = true; /* se usa para poder visualizar los errores */
+  JAVA_UNICODE_ESCAPE = false; 
+  UNICODE_INPUT = false; 
+  IGNORE_CASE = false; 
+  USER_TOKEN_MANAGER = false; 
+  USER_CHAR_STREAM = false; 
+  BUILD_PARSER = true; 
+  BUILD_TOKEN_MANAGER = true; 
+  SANITY_CHECK = true; 
+  FORCE_LA_CHECK = false; /*Esta opción determina los controles de chequeo de ambigüedad de lookahead */
+}
+
+
+PARSER_BEGIN(Variable)
+
+public class Variable {
+
+  
+  public static void main(String args[]) throws ParseException, java.io.FileNotFoundException {
+    Variable parser = new Variable(new java.io.FileInputStream("prueba.txt"));
+    parser.Input();
+  }
+}
+PARSER_END(Variable)
+
+
+/* elementos obviados  */
+SKIP:
+{
+    " "
+ |  "\n"
+ |  "\t"
+ |  "\r"
+}  
+
+
+TOKEN:
+{
+/* Expresion regular  */
+<Variable: <Letramay>(<Letramay> | <Numero> | <Letramin>) 
+                     (<Letramay> | <Numero> | <Letramin>) 
+                     (<Letramay> | <Numero> | <Letramin>) <Numero>>
+
+}
+
+
+TOKEN:
+{
+/* Definición regular */
+<#Letramin: ["a"-"z"]>
+|<#Letramay: ["A"-"Z"]>
+|<#Numero: ["0"-"9"]>
+}
+  
+
+
+
+void Input() :
+{}
+{
+  ( <Variable> )+ <EOF>
+   { System.out.println("La evaluación de las variables fue exitosa"); }
+}
+
